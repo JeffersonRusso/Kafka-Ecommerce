@@ -7,7 +7,7 @@ Para fazer funcionar o Kafka-Ecommerce é necessario ter o KAFKA no computador e
 ## ININICIAR ZOOKEEPER
 bin/zookeeper-server-start.sh config/zookeeper.properties
 
-## ININICIAR KAFKA
+## INICIAR KAFKA
 bin/kafka-server-start.sh config/server.properties 
 
 Demais comandos:
