@@ -5,22 +5,21 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
-import ecommerce.EmailService;
-
 public class KafkaService {
 
 	private final KafkaConsumer<String, String> consumer;
 	private final ConsumerFunction parse;
 	
-	public KafkaService(String topico, ConsumerFunction parse) throws IOException {
+	public KafkaService(String topico, ConsumerFunction parse, String groupId) throws IOException {
 		this.parse = parse;
-		this.consumer = new KafkaConsumer<String, String>(properties());
+		this.consumer = new KafkaConsumer<>(properties(groupId));
 		consumer.subscribe(Collections.singletonList(topico));	
 	}
 	
@@ -28,7 +27,6 @@ public class KafkaService {
 		while(true) {
 			ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
 			if (!records.isEmpty()) {
-				System.out.println("Encontrei " + records.count() + " registros" );
 				for (ConsumerRecord<String, String> record : records) {
 					this.parse.consume(record);
 				}
@@ -36,10 +34,11 @@ public class KafkaService {
 		}
 	}
 	
-	private static Properties properties() throws IOException {
+	private static Properties properties(String groupId ) throws IOException {
 		Properties properties = new Properties();
 		FileInputStream file = new FileInputStream("src/main/resources/consumer.properties");
-		properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, EmailService.class.getSimpleName());
+		properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+		properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, UUID.randomUUID().toString());
 		properties.load(file);
 
 		return properties;
