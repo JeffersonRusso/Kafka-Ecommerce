@@ -4,7 +4,7 @@ public enum GroupIdEnum {
 	
 	EMAIL_GROUP ("EMAIL"),
 	LOG_GROUP ("LOG"),
-	FRAUD_DETECTOR_SERVICE ("FRAUD DETECTOR");
+	FRAUD_DETECTOR_GROUP ("FRAUD DETECTOR");
 	
 	private String nomeDoGrupo;
 	

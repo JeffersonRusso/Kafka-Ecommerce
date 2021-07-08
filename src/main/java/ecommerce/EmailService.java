@@ -18,10 +18,10 @@ public class EmailService {
 	public static void main(String[] args) throws IOException {
 	
 		EmailService emailService = new EmailService();
-		KafkaService kafkaService = new KafkaService(TopicoEnum.ECOMMERCE_SEND_EMAIL.getTopico(),
-				emailService::parse, GroupIdEnum.EMAIL_GROUP.getNomeDoGrupo());
-		
-		kafkaService.run();
+		try (KafkaService kafkaService = new KafkaService(TopicoEnum.ECOMMERCE_SEND_EMAIL.getTopico(),
+				emailService::parse, GroupIdEnum.EMAIL_GROUP.getNomeDoGrupo())) {
+					kafkaService.run();			
+		}
 	}
 		private void parse(ConsumerRecord<String,String> record) {
 				System.out.println("SEND EMAIL\n" + 
